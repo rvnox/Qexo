@@ -2,10 +2,10 @@
 config = {
     "name": "Hugo",
     "posts": {
-        "path": ["content/posts"],
+        "path": ["content/post"],
         "depth": [-1],
         "type": [".md"],
-        "save_path": "content/posts/${filename}.md",
+        "save_path": "content/post/${filename}.md",
         "scaffold": "archetypes/post.md"
     },
     "drafts": {
