@@ -472,7 +472,7 @@
                                             <select class="form-control" name="CDNJS"
                                                     id="cdnjs">
                                                 {% for cdn in ALL_CDN %}
-                                                    <option{% if cdn.url == cdn_prev %}
+                                                    <option{% if cdn.url == NOW_CDN %}
                                                         selected{% endif %} value="{{ cdn.url }}"
                                                     >{{ cdn.name }}</option>
                                                 {% endfor %}
@@ -939,9 +939,9 @@
                 method: 'post',
                 data: {
                     csrfmiddlewaretoken: '{{ csrf_token }}',
-                    'logo': 'https://unpkg.com/qexo-static@{{ static_version }}/qexo/images/qexo.png',
-                    'icon': 'https://unpkg.com/qexo-static@{{ static_version }}/qexo/images/icon.png',
-                    'logo-dark': 'https://unpkg.com/qexo-static@{{ static_version }}/qexo/images/qexo-dark.png',
+                    'logo': 'https://registry.npmmirror.com/qexo-static/{{ static_version }}/files/qexo/images/qexo.png',
+                    'icon': 'https://registry.npmmirror.com/qexo-static/{{ static_version }}/files/qexo/images/icon.png',
+                    'logo-dark': 'https://registry.npmmirror.com/qexo-static/{{ static_version }}/files/qexo/images/qexo-dark.png',
                     'name': 'Hexo管理面板',
                     'split': ' - '
                 },
@@ -1544,12 +1544,26 @@
             "TianliGPT": {
                 "key": {"description": "{{ "EXCERPT_TIANLI_KEY" | gettext }}", "placeholder": "{{ "EXCERPT_TIANLI_KEY_PH" | gettext }}"},
                 "length": {"description": "{{ "EXCERPT_TIANLI_LENGTH" | gettext }}", "placeholder": "{{ "EXCERPT_TIANLI_LENGTH_PH" | gettext }}"}
-            }
-            /*
+            },
             "ChatGPT": {
-
+                "api_key": {
+                    "description": "{{ "EXCERPT_CHATGPT_API_KEY" | gettext }}",
+                    "placeholder": "{{ "EXCERPT_CHATGPT_API_KEY_PH" | gettext }}"
+                },
+                "api": {
+                    "description": "{{ "EXCERPT_CHATGPT_API" | gettext }}",
+                    "placeholder": "{{ "EXCERPT_CHATGPT_API_PH" | gettext }}"
+                },
+                "length": {
+                    "description": "{{ "EXCERPT_CHATGPT_LENGTH" | gettext }}",
+                    "placeholder": "{{ "EXCERPT_CHATGPT_LENGTH_PH" | gettext }}"
+                },
+                "model": {
+                    "description": "{{ "EXCERPT_CHATGPT_MODEL" | gettext }}",
+                    "placeholder": "{{ "EXCERPT_CHATGPT_MODEL_PH" | gettext }}"
+                },
+                
             }
-            */
         };
         {% if AUTO_EXCERPT_CONFIG %}
             var now_excerpt = {{ AUTO_EXCERPT_CONFIG | safe }};

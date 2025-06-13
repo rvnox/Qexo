@@ -501,6 +501,33 @@ def save_post(request):
             context = {"msg": repr(error), "status": False}
     return JsonResponse(safe=False, data=context)
 
+@login_required(login_url="/login/")
+def unpublish_post(request):
+    context = dict(msg="Error!", status=False)
+    if request.method == "POST":
+        file_name = unicodedata.normalize('NFC', request.POST.get('file'))
+        try:
+            Provider().unpublish_post(file_name)
+            context = {"msg": gettext("UNPUBLISH_SUCCESS"), "status": True, "file_name": file_name}
+            delete_all_caches()
+        except Exception as error:
+            logging.error(repr(error))
+            context = {"msg": repr(error), "status": False}
+    return JsonResponse(safe=False, data=context)
+
+@login_required(login_url="/login/")
+def publish_post(request):
+    context = dict(msg="Error!", status=False)
+    if request.method == "POST":
+        file_name = unicodedata.normalize('NFC', request.POST.get('file'))
+        try:
+            Provider().publish_post(file_name)
+            context = {"msg": gettext("PUBLISH_SUCCESS"), "status": True, "file_name": file_name}
+            delete_all_caches()
+        except Exception as error:
+            logging.error(repr(error))
+            context = {"msg": repr(error), "status": False}
+    return JsonResponse(safe=False, data=context)
 
 # 保存页面 api/save_page
 @login_required(login_url="/login/")
@@ -685,22 +712,15 @@ def create_webhook_config(request):
     context = dict(msg="Error!", status=False)
     if request.method == "POST":
         try:
-            if SettingModel.objects.filter(name="WEBHOOK_APIKEY"):
-                config = {
-                    "content_type": "json",
-                    "url": request.POST.get("uri") + "?token=" + SettingModel.objects.get(
-                        name="WEBHOOK_APIKEY").content
-                }
+            key = get_setting("WEBHOOK_APIKEY")
+            if key:
+                url = request.POST.get("uri") + "?token=" + key
             else:
-                save_setting("WEBHOOK_APIKEY", ''.join(
-                    random.choice("qwertyuiopasdfghjklzxcvbnm1234567890") for x in range(12)))
-                config = {
-                    "content_type": "json",
-                    "url": request.POST.get("uri") + "?token=" + SettingModel.objects.get(
-                        name="WEBHOOK_APIKEY").content
-                }
+                key = ''.join(random.choice("qwertyuiopasdfghjklzxcvbnm1234567890") for x in range(12))
+                save_setting("WEBHOOK_APIKEY", key)
+                url = request.POST.get("uri") + "?token=" + key
             if Provider().delete_hooks():
-                Provider().create_hook(config)
+                Provider().create_hook(url)
                 context = {"msg": gettext("SAVE_SUCCESS"), "status": True}
             else:
                 context = {"msg": gettext("PROVIDER_NO_SUPPORT"), "status": False}
